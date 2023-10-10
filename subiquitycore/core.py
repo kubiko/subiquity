@@ -61,7 +61,8 @@ class Application:
         self.root = "/"
         if opts.dry_run:
             self.root = opts.output_base
-        self.state_dir = os.path.join(self.root, "run", self.project)
+        # do not use self.project as we want to endup with /run/console-conf
+        self.state_dir = os.path.join(self.root, "run", "console-conf")
         os.makedirs(self.state_path("states"), exist_ok=True)
 
         self.scale_factor = float(os.environ.get("SUBIQUITY_REPLAY_TIMESCALE", "1"))
