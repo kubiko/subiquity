@@ -107,7 +107,12 @@ def write_login_details(fp, username, ips):
     sshcommands = "\n"
     for ip in ips:
         sshcommands += "    ssh %s@%s\n" % (username, ip)
-    tty_name = os.ttyname(0)[5:]  # strip off the /dev/
+    # handle error if we cannot get tty, e.g. in snap confinement
+    # try to get correct tty from env, it should be ready there
+    try:
+        tty_name = os.ttyname(0)[5:]  # strip off the /dev/
+    except OSError:
+        tty_name = os.getenv("tty", "")
     version = get_core_version() or "16"
     if len(ips) == 0:
         fp.write(
@@ -147,7 +152,12 @@ def write_login_details_standalone():
             print("device managed without user")
             return 2
         else:
-            tty_name = os.ttyname(0)[5:]
+            # handle error if we cannot get tty, e.g. in snap confinement
+            # try to get correct tty from env, it should be ready there
+            try:
+                tty_name = os.ttyname(0)[5:]
+            except OSError:
+                tty_name = os.getenv("tty", "")
             version = get_core_version() or "16"
             print(login_details_tmpl_no_ip.format(tty_name=tty_name, version=version))
             return 2
