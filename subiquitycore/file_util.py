@@ -38,8 +38,9 @@ def open_perms(filename, *, cmode=None):
         yield tf
         tf.close()
         os.chmod(tf.name, cmode)
-        if os.getuid() == 0:
-            os.chown(tf.name, -1, grp.getgrnam(_DEF_GROUP).gr_gid)
+        if os.getenv("SNAP_CONFINEMENT", "classic") != "strict":
+            if os.getuid() == 0:
+                os.chown(tf.name, -1, grp.getgrnam(_DEF_GROUP).gr_gid)
         os.rename(tf.name, filename)
     except OSError as e:
         if tf is not None:

@@ -22,9 +22,10 @@ from subiquitycore.file_util import _DEF_PERMS, _DEF_GROUP
 
 def setup_logger(dir, base='subiquity'):
     os.makedirs(dir, exist_ok=True)
-    if os.getuid() == 0:
-        os.chmod(dir, 0o750)
-        os.chown(dir, -1, grp.getgrnam(_DEF_GROUP).gr_gid)
+    if os.getenv("SNAP_CONFINEMENT", "classic") != "strict":
+        if os.getuid() == 0:
+            os.chmod(dir, 0o750)
+            os.chown(dir, -1, grp.getgrnam(_DEF_GROUP).gr_gid)
 
     logger = logging.getLogger("")
     logger.setLevel(logging.DEBUG)
@@ -36,8 +37,9 @@ def setup_logger(dir, base='subiquity'):
         logfile = "{}.{}".format(nopid_file, os.getpid())
         handler = logging.FileHandler(logfile)
         os.chmod(logfile, _DEF_PERMS)
-        if os.getuid() == 0:
-            os.chown(logfile, -1, grp.getgrnam(_DEF_GROUP).gr_gid)
+        if os.getenv("SNAP_CONFINEMENT", "classic") != "strict":
+            if os.getuid() == 0:
+                os.chown(logfile, -1, grp.getgrnam(_DEF_GROUP).gr_gid)
         # os.symlink cannot replace an existing file or symlink so create
         # it and then rename it over.
         tmplink = logfile + ".link"
