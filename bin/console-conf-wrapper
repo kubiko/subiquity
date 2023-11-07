@@ -42,9 +42,9 @@ if [ "$(snap managed)" = "true" ]; then
         tty=$(tty)
         tty=$(echo ${tty#/dev/} | tr '/' '-')
         readargs=()
-        filepath="/run/console-conf/login-details-${tty}.txt"
+        filepath="/run/console_conf/login-details-${tty}.txt"
         if [ ! -f ${filepath} ]; then
-            mkdir -p /run/console-conf
+            mkdir -p /run/console_conf
             set +e
             /usr/share/subiquity/console-conf-write-login-details > ${filepath}.tmp
             rval=$?

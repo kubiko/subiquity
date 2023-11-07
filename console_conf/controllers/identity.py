@@ -208,8 +208,8 @@ class IdentityController(TuiController):
                     'realname': email,
                     'username': username,
                     }
-                os.makedirs('/run/console-conf', exist_ok=True)
-                login_details_path = '/run/console-conf/login-details.txt'
+                os.makedirs('/run/console_conf', exist_ok=True)
+                login_details_path = '/run/console_conf/login-details.txt'
                 self.model.add_user(result)
         ips = []
         net_model = self.app.base_model.network
